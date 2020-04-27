@@ -1,4 +1,5 @@
-﻿using SalesWebMvc.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesWebMvc.Data;
 using SalesWebMvc.Models;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,34 @@ namespace SalesWebMvc.Services
             _context = context;
         }
 
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _context.Seller.ToList();
+            return await _context.Seller.ToListAsync();
+        }
+
+        public async Task InsertAsync(Seller obj)
+        {
+            _context.Seller.Add(obj);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Seller> FindAsync(int? id)
+        {
+            return await _context.Seller.FirstOrDefaultAsync(obj => obj.Id == id);
+        }
+
+        public async Task UpdateAsync(Seller obj)
+        {
+            _context.Seller.Update(obj);
+            await _context.SaveChangesAsync();
+            ;
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var seller = await _context.Seller.FindAsync(id);
+            _context.Seller.Remove(seller);
+            await _context.SaveChangesAsync();
         }
     }
 }
